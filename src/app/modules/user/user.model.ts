@@ -23,7 +23,7 @@ const userSchema = new Schema<IUser>(
     address: { type: String },
     isDeleted: { type: Boolean, default: false },
     isActive: {
-      type: Boolean,
+      type: String,
       enum: Object.values(IsActive),
       default: IsActive.ACTIVE,
     },
