@@ -1,8 +1,12 @@
-import { request, response } from "express";
+import { NextFunction, request, response } from "express";
 import httpStatus from "http-status-codes";
 import { userService } from "./user.service";
 
-const createUser = async (req = request, res = response) => {
+const createUser = async (
+  req = request,
+  res = response,
+  next: NextFunction
+) => {
   try {
     const user = await userService.createUser(req.body);
 
@@ -11,9 +15,10 @@ const createUser = async (req = request, res = response) => {
       .json({ message: "User created successfully", user });
   } catch (error) {
     console.log(error);
-    res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({ message: `Something went wrong ${error}`, error });
+    // res
+    //   .status(httpStatus.INTERNAL_SERVER_ERROR)
+    //   .json({ message: `Something went wrong ${error} from user controller`, error });
+    next(error);
   }
 };
 
