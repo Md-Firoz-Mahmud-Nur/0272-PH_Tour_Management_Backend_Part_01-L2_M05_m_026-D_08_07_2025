@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { envVariables } from "../config/env";
+import AppError from "../errorHelpers/AppError";
 
 export const globalErrorHandler = (
   err: any,
@@ -7,8 +8,16 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = 500;
-  const message = `Something went wrong ${err.message} from global middleware`;
+  let statusCode = 500;
+  let message = `Something went wrong ${err.message} from global middleware`;
+
+  if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
+  } else if (err instanceof Error) {
+    statusCode = 500;
+    message = err.message;
+  }
 
   res.status(statusCode).json({
     success: false,
